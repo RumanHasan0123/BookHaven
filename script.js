@@ -1,3 +1,77 @@
+
+let cart = [];
+
+
+function addToCart(bookName, bookPrice) {
+  
+    const existingBook = cart.find(item => item.name === bookName);
+    
+    if (existingBook) {
+       
+        existingBook.quantity += 1;
+    } else {
+       
+        cart.push({ name: bookName, price: parseFloat(bookPrice), quantity: 1 });
+    }
+    
+
+    updateCart();
+}
+
+
+function removeFromCart(bookName) {
+  
+    cart = cart.filter(item => item.name !== bookName);
+    
+  
+    updateCart();
+}
+
+
+function updateCart() {
+    const cartItemsContainer = document.querySelector('.cart-items');
+    const totalPriceElement = document.getElementById('total-price');
+    
+
+    cartItemsContainer.innerHTML = '';
+    
+    let totalPrice = 0;
+    
+ 
+    cart.forEach(item => {
+        const cartItem = document.createElement('div');
+        cartItem.classList.add('cart-item');
+        
+        cartItem.innerHTML = `
+            <div class="item-info">
+                <h4>${item.name}</h4>
+                <p>Price: $${item.price.toFixed(2)}</p>
+                <p>Quantity: ${item.quantity}</p>
+            </div>
+            <button class="remove-btn" onclick="removeFromCart('${item.name}')">Remove</button>
+        `;
+        
+        cartItemsContainer.appendChild(cartItem);
+        
+    
+        totalPrice += item.price * item.quantity;
+    });
+    
+   
+    totalPriceElement.textContent = totalPrice.toFixed(2);
+}
+
+
+const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+addToCartButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        const bookName = button.getAttribute('data-name');
+        const bookPrice = button.getAttribute('data-price');
+        addToCart(bookName, bookPrice);
+    });
+});
+
+
 function validateForm() {
     var username = document.getElementById("username").value;
     var email = document.getElementById("email").value;
